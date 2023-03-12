@@ -1,11 +1,11 @@
 # HID Bootloader Firmware for STICK250 (PIC32MX250F128D)
-<img style="float: right;" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhwi5ezDo73WuniMKqsYkIs551BFWiUmgmUbFy6ECa61eeGfr9_IWMujwp4PZQe9I8vc6m5fnBRJFGfXdZcbtFQlHvUgvQI6QyB6erLidGnredK7NUXovNIMFPnAgBopkmU0ToYB7bd_pboKBh6zISEbt10VzlJuOOAheYhE-JBQyHv6VDZDqvv8JU8/s320/program.png"  >
+![](https://github.com/dgtie/dgtie.github.io/blob/main/stick250.jpg?raw=true)
 - based on Microchip Application Note AN1388
 - for microcontroller PIC32MX250F128D
 - 8k bytes in size, leave 112k to user application
 - development board [STICK250](https://lamsworkshop.blogspot.com/2023/01/stick250-pic32mx250f128d-experiment.html)
 
-![](https://github.com/dgtie/dgtie.github.io/blob/main/stick250.jpg?raw=true)
+![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhwi5ezDo73WuniMKqsYkIs551BFWiUmgmUbFy6ECa61eeGfr9_IWMujwp4PZQe9I8vc6m5fnBRJFGfXdZcbtFQlHvUgvQI6QyB6erLidGnredK7NUXovNIMFPnAgBopkmU0ToYB7bd_pboKBh6zISEbt10VzlJuOOAheYhE-JBQyHv6VDZDqvv8JU8/s320/program.png)
 
 # Operation
 When power up or reset, it reads the first instruction at user application startup code. If the value is 0xFFFFFFFF, it jumps to bootloader. Otherwise it checks the user button (B8). If button state is LOW, it jumps to bootloader. Otherwise it jumps to user application.
