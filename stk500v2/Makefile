@@ -1,4 +1,4 @@
-PROG = $(HOME)/.platformio/packages/tool-pic32prog/pic32prog
+PROG = ../prog/prog
 BIN = $(HOME)/.platformio/packages/toolchain-microchippic32/bin
 GPP = $(BIN)/pic32-g++
 BIN2HEX = $(BIN)/pic32-bin2hex
@@ -8,7 +8,7 @@ SRC = $(shell ls *.cpp)
 OBJ = $(SRC:.cpp=.o)
 TARGET = out
 
-CFLAGS = -mprocessor=32MX250F128D -Iinclude
+CFLAGS = -mprocessor=32MX250F128D -Iinclude -Os
 LDFLAGS = -mprocessor=32MX250F128D -Wl,-Map=$(TARGET).map -T app.ld
 
 all: $(TARGET).hex

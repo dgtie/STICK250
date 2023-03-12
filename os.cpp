@@ -1,6 +1,6 @@
 #include <xc.h>
 
-const int devcfg3 __attribute__((section(".config_BFC00BF0"), used)) = 0x8FFFFFFF;
+const int devcfg3 __attribute__((section(".config_BFC00BF0"), used)) = 0x0FFFFFFF;
 const int devcfg2 __attribute__((section(".config_BFC00BF4"), used)) = 0xFFF979D9;
 const int devcfg1 __attribute__((section(".config_BFC00BF8"), used)) = 0xFF74CDDB;
 const int devcfg0 __attribute__((section(".config_BFC00BFC"), used)) = 0x7FFFFFFB;

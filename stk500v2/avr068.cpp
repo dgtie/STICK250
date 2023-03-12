@@ -130,7 +130,7 @@ void stk500(void) {
     if (!get_tx_char(c)) return;
     parser(c);
     int size = 2;
-//    if (command) debug_w(command);
+    if (command) debug_w(command);
     addressing_is_word = true;  // 16 bit is default
     switch (command) {
         case 0: return;

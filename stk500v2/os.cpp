@@ -17,6 +17,7 @@ void init(void) {
   SYSKEY = 0;                       // relock
   ANSELBCLR = 0xf;
   TRISBCLR = 0x200;                 // RB9 (LED)
+  CNPUB = 0x100;                    // RB8
   CNPUC = 0x200;                    // RC9
   IPC0bits.CTIP = 1;
   IEC0bits.CTIE = 1;
@@ -60,8 +61,9 @@ void led_on(void) { LATBSET = 0x200; }
 void led_off(void) { LATBCLR = 0x200; }
 
 void button(void) {
-  static int b = 0x200;
-  if (b == (PORTC & 0x200)) return;
-  button_changed(b ^= 0x200);
+  static int b = 0x100;
+  static int c = 0x200;
+  if (b != (PORTB & 0x100)) button_changed(b ^= 0x100);
+  if (c != (PORTC & 0x200)) button_changed(c ^= 0x200);
 }
 

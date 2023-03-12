@@ -6,7 +6,7 @@
 # Configuration Registers
 |Register|Value|
 |-|-|
-|DEVCFG3|0x8FFFFFFF|
+|DEVCFG3|0x0FFFFFFF|
 |DEVCFG2|0xFFF979D9|
 |DEVCFG1|0xFF74CDDB|
 |DEVCFG0|0x7FFFFFFB|
