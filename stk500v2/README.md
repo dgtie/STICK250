@@ -1,4 +1,5 @@
 # STK500v2, 3.3 volts only
+![](https://github.com/dgtie/dgtie.github.io/blob/main/avr.png?raw=true)
 - programmer application: avrdude
 - development board: [STICK250](https://lamsworkshop.blogspot.com/2023/01/stick250-pic32mx250f128d-experiment.html)
 - the unit being programming **MUST be 3.3 volts powered**
