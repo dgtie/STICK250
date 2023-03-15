@@ -30,6 +30,6 @@
 >int read_cdc(char* &buffer);
 
 - read data from host
-- buffer size shall be 64 bytes
+- a pointer to data is passed back in "buffer"
 - return number of bytes read
 

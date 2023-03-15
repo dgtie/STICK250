@@ -30,6 +30,7 @@ User application should not change configuration registers. The bootloader has t
 - **root**: bootloader source code
 - **prog**: programmer application source code
 - **blink**: example user application (just blinks the on board LED)
+- **cdc**: single usb virtual com port example
 - **usbuart**: sample application (makes STICK250 a USB to UART bridge)
 - **pk2**: sample application (makes STICK250 a pickit 2 clone, 3.3 volts only)
 - **stk500v2**: sample application (makes STICK250 an AVR programmer, 3.3 volts)
