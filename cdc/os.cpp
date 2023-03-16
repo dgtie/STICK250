@@ -5,8 +5,6 @@
 int read_cdc(char*&);
 bool send_cdc(char*, int);
 
-char buffer[64];
-
 void init(void) {
   CNPUBSET = 1 << 8;		// enable B8 pull-up resistor
   TRISBCLR = 1 << 9;            // clear tris -> set B9 as output
@@ -24,7 +22,7 @@ static volatile unsigned tick;
 void poll(unsigned timestamp);  // it will be called when timestamp changes
 
 static void loop(unsigned t) {
-  static char *buf;
+  static char *buf, buffer[64];
   static int len;
   if (buf) {
     if (send_cdc(buffer, len)) buf = 0;
