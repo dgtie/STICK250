@@ -12,8 +12,6 @@
 - uart.cpp
 
 # How to program
-- most usb codes run at interrupt level
-- functions below shall be called from user level
 
 >void USBDeviceInit(void);
  
@@ -24,8 +22,7 @@
 - send data to host
 - data length must be under 64 (bytes)
 - return true if the request is accepted
-- the data buffer should not be modified the operation is completed
-- call send_cdc(0, 0) to check if the data have been sent
+- the data buffer should not be modified until data are sent. Call send_cdc(0, 0) to check.
 
 >int read_cdc(char* &buffer);
 
