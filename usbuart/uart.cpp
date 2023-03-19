@@ -1,15 +1,14 @@
 #include <xc.h>
 #include "uart.h"
 
-void CDCRx(char c);
-int CDCTx(char* &buff);
+void uart_rx(char);
 
 namespace {
     
-    char *buffer;
-    int idx, length;
+const char *buffer;
+int length;
     
-}
+} // anonymous
 
 bool stop_selection(int i) {
     if (i == NUM_STOP_BITS_1) { U1MODEbits.STSEL = 0; return true; }
@@ -33,23 +32,29 @@ bool baud_selection(unsigned b) {
     return false;
 }
 
+bool uart_tx(const char *s, int len) {
+  if (IEC1bits.U1TXIE) return false;
+  if (len) {
+    buffer = s;
+    length = len;
+    IEC1bits.U1TXIE = 1;
+  }
+  return true;
+}
+
 extern "C"
 void __attribute__((interrupt(ipl1soft), vector(_UART1_VECTOR), nomips16)) u1ISR(void) {
+    static int index;
     if (IFS1bits.U1RXIF) {
-        CDCRx(U1RXREG);
+        uart_rx(U1RXREG);
         IFS1bits.U1RXIF = 0;
     }
     if (IEC1bits.U1TXIE) if (IFS1bits.U1TXIF) {
-        if (idx == length) {
-            idx = 0;
-            if (!(length = CDCTx(buffer))) IEC1bits.U1TXIE = 0;
-        } else U1TXREG = buffer[idx++];
+        U1TXREG = buffer[index++];
+        if (index == length) {
+            index = 0;
+            IEC1bits.U1TXIE = 0;
+        }
         IFS1bits.U1TXIF = 0;
     }
-}
-
-bool uart_tx(char *buf, int len) {
-    if (IEC1bits.U1TXIE) return false;
-    buffer = buf; length = len; idx = 0;
-    return IEC1bits.U1TXIE = 1;
 }

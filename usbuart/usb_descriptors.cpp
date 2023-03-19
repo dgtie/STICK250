@@ -252,12 +252,13 @@ const struct {
 const struct {
     char bLength;
     char bDescriptorType;
-    short string[8];
+    short string[19];
 } sd002 = {
     sizeof(sd002),
     USB_DESCRIPTOR_STRING,
     {
-        'C','D','C','-','U','A','R','T'
+        'c','d','c',' ','c','o','m',' ','p','o',
+        'r','t',' ','s','i','n','g','l','e'
     }
 };
 

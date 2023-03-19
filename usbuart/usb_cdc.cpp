@@ -10,7 +10,6 @@ void bd_fill(int index, char *buf, int size, int stat);
 bool stop_selection(int);
 bool parity_data_selection(int p, int d);
 bool baud_selection(unsigned);
-bool uart_tx(char *buf, int len);
 
 typedef struct
 {
@@ -43,55 +42,36 @@ namespace {
     
     LINE_CODING line_coding = { 115200, NUM_STOP_BITS_1, PARITY_NONE, 8 };
     char temp[8];
-    char in_buffer[2][USB_EP2_BUFF_SIZE], *rx_buffer;
     char out_buffer[2][USB_EP2_BUFF_SIZE];
-    int rx_index, tx_length;
-    bool inBusy;
+    int in_bd, out_bd, out_length;
     
-}
+} // anonymous
 
 void CDCInitEndpoint(int config) {
     if (config) {
         U1EP1 = 5;      // EPTXEN, EPHSHK
         U1EP2 = 0x1d;   // EPCONDIS, EPRXEN, EPTXEN, EPHSHK
-        rx_buffer = in_buffer[0];
-        rx_index = tx_length = 0;
-        inBusy = false;
+        in_bd = 10;
+        out_bd = 0;
         bd_fill(6, (char*)&cdc_notice_packet, USB_EP1_BUFF_SIZE, 0x80);
         bd_fill(8, out_buffer[0], USB_EP2_BUFF_SIZE, 0x80);
     }
 }
 
-int CDCTx(char* &buffer) {
-    int length;
-    if ((length = tx_length)) {
-        if (buffer == out_buffer[0]) {
-            bd_fill(8, out_buffer[0], USB_EP2_BUFF_SIZE, 0x80);
-            buffer = out_buffer[1];
-        } else {
-            bd_fill(9, out_buffer[1], USB_EP2_BUFF_SIZE, 0xc0);
-            buffer = out_buffer[0];            
-        }
-        tx_length = 0;
-    }
-    return length;
-}
-
 void CDC_TRN_Handler(int length) {
-    char *buf;
-    switch (U1STAT >> 2) {
-        case 6: bd_fill(7, (char*)&cdc_notice_packet, USB_EP1_BUFF_SIZE, 0xc0);
-            break;
-        case 7: bd_fill(6, (char*)&cdc_notice_packet, USB_EP1_BUFF_SIZE, 0x80);
+    int bd = U1STAT >> 2;
+    switch (bd) {
+        case 6:
+        case 7:
+            bd_fill(bd ^ 1, (char*)&cdc_notice_packet, USB_EP1_BUFF_SIZE,
+                    bd & 1 ? 0x80 : 0xc0);
             break;
         case 8:
         case 9:
-            if (uart_tx(out_buffer[U1STAT >> 2 & 1], tx_length = length))
-                CDCTx(buf = out_buffer[(U1STAT >> 2 & 1) ^ 1]);
-            break;
+            out_length = length; out_bd = bd ^ 1; break;
         case 10:
-        case 11: inBusy = false;
-            break;
+        case 11:
+            in_bd = bd ^ 1; break;
         default:;
     }
 }
@@ -122,21 +102,22 @@ void CDCCtrlTrfSetupComplete(setup_packet *SetupPkt) {
     }
 }
 
-void CDCRx(char c) { rx_buffer[rx_index++] = c; }
-
-void CDCTick(void) {
-    static int tick;
-    if (rx_index) {
-        if (++tick > 20) if (!inBusy) {
-            if (rx_buffer == in_buffer[0]) {
-                rx_buffer = in_buffer[1];
-                bd_fill(10, in_buffer[0], rx_index, 0x80);
-            } else {
-                rx_buffer = in_buffer[0];
-                bd_fill(11, in_buffer[1], rx_index, 0xc0);
-            }
-            rx_index = 0; inBusy = true;
-        }
-    } else tick = 0;
+bool send_cdc(const char *p, int len) {
+  if (!in_bd) return false;
+  if (len) {
+    int bd = in_bd;
+    in_bd = 0;
+    bd_fill(bd, (char*)p, len, bd & 1 ? 0xc0 : 0x80);
+  }
+  return true;
 }
 
+int read_cdc(char* &p) {
+  if (!out_bd) return 0;
+  int length = out_length;
+  int bd = out_bd;
+  out_bd = 0;
+  bd_fill(bd, out_buffer[bd & 1], USB_EP2_BUFF_SIZE, bd & 1 ? 0xc0 : 0x80);
+  p = out_buffer[(bd ^ 1) & 1];
+  return length;
+}

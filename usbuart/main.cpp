@@ -1,12 +1,13 @@
-void init(void), wait(unsigned), toggle(void), USBDeviceInit(void);
+void init(void), toggle_LED(void), USBDeviceInit(void);
+bool wait(unsigned);
 
 int main(void) {
     init();
     USBDeviceInit();
-    while (1) wait(0);
+    while (wait(0));
 }
 
-void poll(unsigned t) {
-    if (t & 511) return;
-    toggle();
-}
+void read_switch(void);
+void poll(unsigned t) { if (!(t & 15)) read_switch(); }
+
+void on_switch_change(bool b) { if (!b) toggle_LED(); }
