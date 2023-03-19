@@ -1,4 +1,4 @@
-PROG = $(HOME)/.platformio/packages/tool-pic32prog/pic32prog
+PROG = ../prog/prog
 BIN = $(HOME)/.platformio/packages/toolchain-microchippic32/bin
 GPP = $(BIN)/pic32-g++
 BIN2HEX = $(BIN)/pic32-bin2hex
